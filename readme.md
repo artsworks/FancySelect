@@ -79,7 +79,7 @@ mySelect.trigger('disable.fs'); // now disabled again
 Templates
 ---------
 
-If you need to do something fancy with the trigger or the individual options, you can use `triggerTemplate` or `optionTemplate`, which are both functions passed an `option` element (jQuery-wrapped) and returning an HTML string to render.
+If you need to do something fancy with the trigger, option group title or the individual options, you can use `triggerTemplate`, `optionGroupTemplate` or `optionTemplate`, which are all functions that are passed an `option` element (jQuery-wrapped) and return an HTML string to render.
 
 
 ### HTML
