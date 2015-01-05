@@ -202,20 +202,6 @@ $.fn.fancySelect = (opts = {}) ->
       selOpts = sel.find 'option'
 
       return appendOption(sel, options)
-      # generate list of options for the fancySelect
-
-      sel.find('option').each (i, opt) ->
-        opt = $(opt)
-
-        if !opt.prop('disabled') && (opt.val() || settings.includeBlank)
-          # Generate the inner HTML for the option from our template
-          optHtml = settings.optionTemplate(opt)
-
-          # Is there a select option on page load?
-          if opt.prop('selected')
-            options.append "<li data-raw-value=\"#{opt.val()}\" class=\"selected\">#{optHtml}</li>"
-          else
-            options.append "<li data-raw-value=\"#{opt.val()}\">#{optHtml}</li>"
 
     # for updating the list of options after initialization
     sel.on 'update.fs', ->

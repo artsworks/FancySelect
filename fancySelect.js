@@ -209,18 +209,6 @@
         }
         selOpts = sel.find('option');
         return appendOption(sel, options);
-        return sel.find('option').each(function(i, opt) {
-          var optHtml;
-          opt = $(opt);
-          if (!opt.prop('disabled') && (opt.val() || settings.includeBlank)) {
-            optHtml = settings.optionTemplate(opt);
-            if (opt.prop('selected')) {
-              return options.append("<li data-raw-value=\"" + (opt.val()) + "\" class=\"selected\">" + optHtml + "</li>");
-            } else {
-              return options.append("<li data-raw-value=\"" + (opt.val()) + "\">" + optHtml + "</li>");
-            }
-          }
-        });
       };
       sel.on('update.fs', function() {
         wrapper.find('.options').empty();
