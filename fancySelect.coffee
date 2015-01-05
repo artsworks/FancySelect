@@ -4,6 +4,8 @@ $.fn.fancySelect = (opts = {}) ->
   settings = $.extend({
     forceiOS: false
     includeBlank: false
+    optionGroupTemplate: (optionEl) ->
+      return '<h2>'+$(optionEl).prop('label')+'</h2>'
     optionTemplate: (optionEl) ->
       return optionEl.text()
     triggerTemplate: (optionEl) ->
@@ -162,6 +164,34 @@ $.fn.fancySelect = (opts = {}) ->
     options.on 'mouseleave.fs', 'li', ->
       options.find('.hover').removeClass('hover')
 
+    appendOption = (el, options) ->
+      options = $(options)
+      # Find All immediate child elements
+      return el.children().each (i, obj) ->
+
+        obj = $(obj)
+        if obj.prop('tagName') == 'OPTION' 
+          opt = obj
+
+          if !opt.prop('disabled') && (opt.val() || settings.includeBlank)
+            # Generate the inner HTML for the option from our template
+            optHtml = settings.optionTemplate(opt)
+
+            # Is there a select option on page load?
+            if opt.prop('selected')
+              options.append "<li data-raw-value=\"#{opt.val()}\" class=\"selected\">#{optHtml}</li>"
+            else
+              options.append "<li data-raw-value=\"#{opt.val()}\">#{optHtml}</li>"
+
+        else if obj.prop('tagName') == 'OPTGROUP'
+          # Generate the inner HTML for the option from our template
+          optHtml = settings.optionGroupTemplate(obj)
+
+          options.append "#{optHtml}"
+          nestedUL = $('<ul></ul>').appendTo(options)
+          return appendOption(obj, nestedUL)
+
+
     copyOptionsToList = ->
       # update our trigger to reflect the select (it really already should, this is just a safety)
       updateTriggerText()
@@ -171,6 +201,7 @@ $.fn.fancySelect = (opts = {}) ->
       # snag current options before we add a default one
       selOpts = sel.find 'option'
 
+      return appendOption(sel, options)
       # generate list of options for the fancySelect
 
       sel.find('option').each (i, opt) ->

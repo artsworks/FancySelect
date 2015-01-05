@@ -12,6 +12,9 @@
     settings = $.extend({
       forceiOS: false,
       includeBlank: false,
+      optionGroupTemplate: function(optionEl) {
+        return '<h2>' + $(optionEl).prop('label') + '</h2>';
+      },
       optionTemplate: function(optionEl) {
         return optionEl.text();
       },
@@ -21,7 +24,7 @@
     }, opts);
     isiOS = !!navigator.userAgent.match(/iP(hone|od|ad)/i);
     return this.each(function() {
-      var copyOptionsToList, disabled, options, sel, trigger, updateTriggerText, wrapper;
+      var appendOption, copyOptionsToList, disabled, options, sel, trigger, updateTriggerText, wrapper;
       sel = $(this);
       if (sel.hasClass('fancified') || sel[0].tagName !== 'SELECT') {
         return;
@@ -175,6 +178,29 @@
       options.on('mouseleave.fs', 'li', function() {
         return options.find('.hover').removeClass('hover');
       });
+      appendOption = function(el, options) {
+        options = $(options);
+        return el.children().each(function(i, obj) {
+          var nestedUL, opt, optHtml;
+          obj = $(obj);
+          if (obj.prop('tagName') === 'OPTION') {
+            opt = obj;
+            if (!opt.prop('disabled') && (opt.val() || settings.includeBlank)) {
+              optHtml = settings.optionTemplate(opt);
+              if (opt.prop('selected')) {
+                return options.append("<li data-raw-value=\"" + (opt.val()) + "\" class=\"selected\">" + optHtml + "</li>");
+              } else {
+                return options.append("<li data-raw-value=\"" + (opt.val()) + "\">" + optHtml + "</li>");
+              }
+            }
+          } else if (obj.prop('tagName') === 'OPTGROUP') {
+            optHtml = settings.optionGroupTemplate(obj);
+            options.append("" + optHtml);
+            nestedUL = $('<ul></ul>').appendTo(options);
+            return appendOption(obj, nestedUL);
+          }
+        });
+      };
       copyOptionsToList = function() {
         var selOpts;
         updateTriggerText();
@@ -182,6 +208,7 @@
           return;
         }
         selOpts = sel.find('option');
+        return appendOption(sel, options);
         return sel.find('option').each(function(i, opt) {
           var optHtml;
           opt = $(opt);
@@ -202,5 +229,4 @@
       return copyOptionsToList();
     });
   };
-
 }).call(this);
