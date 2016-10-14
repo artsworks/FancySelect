@@ -106,12 +106,8 @@
         wrapper.addClass('disabled');
         return disabled = true;
       });
-      sel.on('change.fs', function(e) {
-        if (e.originalEvent && e.originalEvent.isTrusted) {
-          return e.stopPropagation();
-        } else {
-          return updateTriggerText();
-        }
+      sel.on('change.fs', function() {
+        return updateTriggerText();
       });
       sel.on('keydown', function(e) {
         var hovered, newHovered, w;
